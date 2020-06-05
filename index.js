@@ -12,12 +12,17 @@ const fetchData = async () => {
 
 getResults = async () => {
     const $ = await fetchData();
-    const articleTitle = $('.post-block__title > .post-block__title__link').text();
-    const mostRecentArticle = articleTitle.split('\n')[1];
+ 
+    const articles = [];
+    $('.post-block__title').each((index, value) => {
+       var title = $(value).text();
+       var link = $('.post-block__title__link').attr('href');
+       articles.push({article: [title, link]});
+    });
     
     const url = process.env.SLACK_INCOMING_WEBHOOK;
     const data = {
-        text: mostRecentArticle,
+        text: articles[0].article[0] + articles[0].article[1],
     };
     await axios.post(url, JSON.stringify(data), {
         withCredentials: false,
